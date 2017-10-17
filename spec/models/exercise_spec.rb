@@ -1,5 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Exercise, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should belong_to(:workout) }
+  it { should have_many(:sets) }
+  it { should have_many(:reps) }
 end

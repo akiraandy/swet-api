@@ -1,5 +1,6 @@
 require 'rails_helper'
 
 RSpec.describe Batch, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should belong_to(:exercise) }
+  it { should have_many(:reps) }
 end
