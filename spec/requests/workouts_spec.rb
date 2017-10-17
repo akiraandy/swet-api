@@ -2,9 +2,9 @@ require 'rails_helper'
 
 RSpec.describe "Workouts API", type: :request do
 
-  let(:user) { User.create!(name: "Andy", password: "password", email: "andy@gmai.com")}
-  let!(:workouts) { create_list(:workout, 10) }
-  let(:workout_id) { workouts.first.id }
+  let(:user) { create(:user_with_workouts) }
+  # let!(:workouts) { create_list(:workout, 10) }
+  let(:workout_id) { user.workouts.first.id }
 
   describe "GET /users/:id/workouts" do
     before { get "/users/#{user.id}/workouts" }
@@ -25,7 +25,7 @@ RSpec.describe "Workouts API", type: :request do
     context 'when the record exists' do
       it 'returns the workout' do
         expect(json).not_to be_empty
-        expect(json['id'].to eq(workout_id))
+        expect(json['id']).to eq(workout_id)
       end
 
       it 'returns status code 200' do
@@ -41,7 +41,7 @@ RSpec.describe "Workouts API", type: :request do
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find workout/)
+        expect(response.body).to match(/Couldn't find Workout/)
       end
     end
   end
