@@ -3,7 +3,6 @@ require 'rails_helper'
 RSpec.describe "Workouts API", type: :request do
 
   let(:user) { create(:user_with_workouts) }
-  # let!(:workouts) { create_list(:workout, 10) }
   let(:workout_id) { user.workouts.first.id }
 
   describe "GET /users/:id/workouts" do
@@ -24,8 +23,9 @@ RSpec.describe "Workouts API", type: :request do
 
     context 'when the record exists' do
       it 'returns the workout' do
+        p json
         expect(json).not_to be_empty
-        expect(json['id']).to eq(workout_id)
+        expect(json['workout_id']).to eq(workout_id)
       end
 
       it 'returns status code 200' do

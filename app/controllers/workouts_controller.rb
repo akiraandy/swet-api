@@ -10,6 +10,6 @@ class WorkoutsController < ApplicationController
   def show
     user = User.find(params[:user_id])
     @workout = Workout.find(params[:id])
-    json_response(@workout)
+    json_response(format_workout(@workout))
   end
 end
