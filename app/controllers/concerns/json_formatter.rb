@@ -27,9 +27,7 @@ module JSONFormatter
 
   def format_all_workouts(workouts)
     workout_list = []
-    workouts.each do |workout|
-      workout_list << workout_obj_with_exercises(workout, create_workout_hash(workout))
-    end
+    workouts.each { |workout| workout_list << workout_obj_with_exercises(workout, create_workout_hash(workout)) }
     JSON.generate(workout_list)
   end
 end
