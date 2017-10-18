@@ -1,17 +1,23 @@
-User.create!(name: "Andy", password: "password", email: "andy@website.com")
-User.create!(name: "Rhonda", password: "password", email: "rhonda@website.com")
+require 'faker'
+User.create!(name: "Andy", password: Faker::Internet.password(8), email: "andy@website.com")
+User.create!(name: "Rhonda", password: Faker::Internet.password(8), email: "rhonda@website.com")
 
 User.all.each do |user|
-  workout = Workout.create!(user: user)
-  exercise = Exercise.create!(name: "Push-ups", workout: workout)
   3.times do
-    batch = Batch.create!(exercise: exercise)
-    8.times do
-      batch.reps << Rep.create!(weight: 140.0, batch: b)
+    time = Time.now - ((Random.rand(2)).hours + (Random.rand(45)).minutes)
+    workout = Workout.create!(title: Faker::Dessert.variety, time_spent: time, user: user)
+    6.times do
+      exercise = Exercise.create!(name: Faker::Superhero.power, workout: workout)
+      3.times do
+        set_weight =  1 + Random.rand(140)
+        batch = Batch.create!(exercise: exercise)
+        8.times do
+          batch.reps << Rep.create!(weight: set_weight, set: batch)
+        end
+        exercise.sets << batch
+      end
+      workout.exercises << exercise
+      user.workouts << workout
     end
-    exercise.batches << batch
   end
-  workout.exercises << exercise
-  user.workouts << workout
-  user.save!
 end

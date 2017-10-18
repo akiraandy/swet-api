@@ -23,9 +23,8 @@ RSpec.describe "Workouts API", type: :request do
 
     context 'when the record exists' do
       it 'returns the workout' do
-        p json
         expect(json).not_to be_empty
-        expect(json['workout_id']).to eq(workout_id)
+        expect(json['title']).to eq(Workout.first.title)
       end
 
       it 'returns status code 200' do
@@ -42,6 +41,34 @@ RSpec.describe "Workouts API", type: :request do
 
       it 'returns a not found message' do
         expect(response.body).to match(/Couldn't find Workout/)
+      end
+    end
+  end
+
+  describe 'POST /workouts' do
+    let(:valid_attributes) { {user: user, title: "Today's Workout"} }
+
+    context 'when the request is valid' do
+      before { post "/users/#{user.id}/workouts", params: valid_attributes}
+
+      it 'creates a workout' do
+        expect(json['title']).to eq("Today's Workout")
+      end
+
+      it 'returns status code 201' do
+        expect(response).to have_http_status(201)
+      end
+
+      context 'when the request is invalid' do
+        before { post "/users/#{user.id}/workouts", params: { user: user}}
+
+        it 'returns status code 422' do
+          expect(response).to have_http_status(422)
+        end
+
+        it 'returns a validation failture message' do
+          expect(response.body).to match(/Validation failed: Title can't be blank/)
+        end
       end
     end
   end
