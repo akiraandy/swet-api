@@ -12,14 +12,14 @@ class WorkoutsController < ApplicationController
   end
 
   def create
-    @workout = Workout.new(user: @user)
-    @workout.save!
+    @workout = Workout.create!(workout_params)
+    json_response(@workout, :created)
   end
 
   private
 
   def workout_params
-    params.permit(:user)
+    params.permit(:title).merge(user: @user)
   end
 
   def set_user

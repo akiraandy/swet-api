@@ -15,6 +15,7 @@ module JSONFormatter
     workouts.each do |workout|
       workout_obj = {}
       workout_obj[:title] = workout.title
+      workout_obj[:time_spent] = workout.time_spent
       workout_obj[:exercises] = []
       workout_list << workout_obj
       workout.exercises.each do |exercise|

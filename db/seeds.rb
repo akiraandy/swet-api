@@ -4,7 +4,8 @@ User.create!(name: "Rhonda", password: Faker::Internet.password(8), email: "rhon
 
 User.all.each do |user|
   3.times do
-    workout = Workout.create!(title: Faker::Dessert.variety, user: user)
+    time = Time.now - ((Random.rand(2)).hours + (Random.rand(45)).minutes)
+    workout = Workout.create!(title: Faker::Dessert.variety, time_spent: time, user: user)
     6.times do
       exercise = Exercise.create!(name: Faker::Superhero.power, workout: workout)
       3.times do
