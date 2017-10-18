@@ -24,7 +24,7 @@ RSpec.describe "Workouts API", type: :request do
     context 'when the record exists' do
       it 'returns the workout' do
         expect(json).not_to be_empty
-        expect(json['workout_id']).to eq(workout_id)
+        expect(json['title']).to eq(Workout.first.title)
       end
 
       it 'returns status code 200' do
