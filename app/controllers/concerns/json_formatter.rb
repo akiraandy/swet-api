@@ -19,6 +19,7 @@ module JSONFormatter
 
   def workout_obj_with_exercises(workout, workout_obj)
     workout_obj[:exercises] = workout.exercises.map { |exercise| create_exercise_hash(exercise) }
+    workout_obj
   end
 
   def format_single_workout(workout)
