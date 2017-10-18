@@ -35,6 +35,7 @@ FactoryGirl.define do
   end
 
   factory :workout do
+    title { Faker::Dessert.variety }
     user
 
     factory :workout_with_exercises do

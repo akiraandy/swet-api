@@ -5,5 +5,5 @@ RSpec.describe Workout, type: :model do
   it { should have_many(:exercises) }
   it { should have_many(:sets) }
   it { should have_many(:reps) }
-
+  it { should validate_presence_of(:title) }
 end
