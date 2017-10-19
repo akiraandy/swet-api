@@ -8,10 +8,32 @@ module JSONFormatter
     workout_obj
   end
 
+  def set_obj_array(exercise)
+    set_array = []
+    exercise.sets.each do |set|
+      set_obj = {}
+      set_obj[:set_id] = set.id
+      set_obj[:reps] = rep_list(set)
+      set_array << set_obj
+    end
+    set_array
+  end
+
+  def rep_list(set)
+    rep_list = []
+    set.reps.each do |rep|
+      rep_obj = {}
+      rep_obj[:rep_id] = rep.id
+      rep_obj[:weight] = rep.weight
+      rep_list << rep_obj
+    end
+    rep_list
+  end
+
   def create_exercise_hash(exercise)
     exercise_obj = {}
     exercise_obj[:name] = exercise.name
-    exercise_obj[:sets] = exercise.sets.count
+    exercise_obj[:sets] = set_obj_array(exercise)
     exercise_obj[:reps] = exercise.reps.count
     exercise_obj[:avg_weight] = exercise.avg_weight
     exercise_obj
