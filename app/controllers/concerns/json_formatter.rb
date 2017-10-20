@@ -20,14 +20,14 @@ module JSONFormatter
   end
 
   def rep_list(set)
-    rep_list = []
+    rep_array = []
     set.reps.each do |rep|
       rep_obj = {}
       rep_obj[:rep_id] = rep.id
       rep_obj[:weight] = rep.weight
-      rep_list << rep_obj
+      rep_array << rep_obj
     end
-    rep_list
+    rep_array
   end
 
   def create_exercise_hash(exercise)
@@ -39,8 +39,12 @@ module JSONFormatter
     exercise_obj
   end
 
+  def create_array_of_exercises(exercises)
+    exercises.map { |exercise| create_exercise_hash(exercise) }
+  end
+
   def workout_obj_with_exercises(workout, workout_obj)
-    workout_obj[:exercises] = workout.exercises.map { |exercise| create_exercise_hash(exercise) }
+    workout_obj[:exercises] = create_array_of_exercises(workout.exercises)
     workout_obj
   end
 
