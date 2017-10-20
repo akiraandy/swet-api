@@ -1,9 +1,12 @@
 class Exercise < ApplicationRecord
   belongs_to :workout
-  has_many :sets, class_name: "Batch"
-  has_many :reps, through: :sets
+  has_many :sets, class_name: "Batch", dependent: :destroy
+  has_many :reps, through: :sets, dependent: :destroy
+
+  validates :name, presence: true
+
 
   def avg_weight
-    (self.reps.sum(:weight) / self.reps.count).round(2)
+    self.reps.average(:weight).to_f.round(2)
   end
 end

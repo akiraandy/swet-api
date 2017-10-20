@@ -1,16 +1,18 @@
 require 'rails_helper'
 
-RSpec.describe "Workouts API", type: :request do
+RSpec.describe "Exercise API", type: :request do
 
   let(:user) { create(:user_with_workouts) }
   let(:workout_id) { user.workouts.first.id }
+  let(:exercise) { user.workouts.first.exercises.first }
+  let(:exercise_id) { user.workouts.first.exercises.first.id }
 
-  describe "GET /users/:id/workouts" do
-    before { get "/users/#{user.id}/workouts" }
+  describe 'GET /exercises' do
+    before { get "/workouts/#{workout_id}/exercises" }
 
-    it 'returns workouts' do
+    it 'returns exercises' do
       expect(json).not_to be_empty
-      expect(json.size).to eq(10)
+      expect(json.size).to eq(6)
     end
 
     it 'returns status code 200' do
@@ -18,13 +20,13 @@ RSpec.describe "Workouts API", type: :request do
     end
   end
 
-  describe 'GET /workouts/:id' do
-    before { get "/workouts/#{workout_id}"}
+  describe 'GET /exercises/:id' do
+    before { get "/exercises/#{exercise_id}"}
 
     context 'when the record exists' do
-      it 'returns the workout' do
+      it 'returns the exercise' do
         expect(json).not_to be_empty
-        expect(json['title']).to eq(Workout.first.title)
+        expect(json['name']).to eq(Exercise.first.name)
       end
 
       it 'returns status code 200' do
@@ -33,26 +35,26 @@ RSpec.describe "Workouts API", type: :request do
     end
 
     context 'when the record does not exist' do
-      let(:workout_id) { 100 }
+      let(:exercise_id) { 200 }
 
       it 'returns status code 404' do
         expect(response).to have_http_status(404)
       end
 
       it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Workout/)
+        expect(response.body).to match(/Couldn't find Exercise/)
       end
     end
   end
 
-  describe 'POST /workouts' do
-    let(:valid_attributes) { {user: user, title: "Today's Workout"} }
+  describe 'POST /exercises' do
+    let(:valid_attributes) { {name: "Push-ups" } }
 
     context 'when the request is valid' do
-      before { post "/users/#{user.id}/workouts", params: valid_attributes}
+      before { post "/workouts/#{workout_id}/exercises", params: valid_attributes}
 
       it 'creates a workout' do
-        expect(json['title']).to eq("Today's Workout")
+        expect(json['name']).to eq("Push-ups")
       end
 
       it 'returns status code 201' do
@@ -60,27 +62,28 @@ RSpec.describe "Workouts API", type: :request do
       end
 
       context 'when the request is invalid' do
-        before { post "/users/#{user.id}/workouts", params: { user: user}}
+        before { post "/workouts/#{workout_id}/exercises", params: {name: nil} }
 
         it 'returns status code 422' do
           expect(response).to have_http_status(422)
         end
 
         it 'returns a validation failture message' do
-          expect(response.body).to match(/Validation failed: Title can't be blank/)
+          expect(response.body).to match(/Validation failed: Name can't be blank/)
         end
       end
     end
   end
 
-  describe "PUT /workouts/:id" do
-    let(:valid_attributes) { { title: 'Edit Workout' } }
+  describe "PUT /exercise/:id" do
+    let(:valid_attributes) { { name: 'Edit name' } }
 
     context 'when the record exists' do
-      before { put "/workouts/#{workout_id}"}
+      before { put "/exercises/#{exercise_id}", params: valid_attributes }
 
       it 'updates the record' do
         expect(response.body).to be_empty
+        expect(exercise.name).to eq('Edit name')
       end
 
       it 'returns status code 204' do
@@ -89,8 +92,8 @@ RSpec.describe "Workouts API", type: :request do
     end
   end
 
-  describe "DELETE /workouts/:id" do
-    before { delete "/workouts/#{workout_id}" }
+  describe "DELETE /exercises/:id" do
+    before { delete "/exercises/#{exercise_id}" }
 
     it 'returns status code 204' do
       expect(response).to have_http_status(204)
