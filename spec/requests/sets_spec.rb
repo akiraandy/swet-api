@@ -19,18 +19,6 @@ RSpec.describe "Sets API", type: :request do
       it 'returns status code 201' do
         expect(response).to have_http_status(201)
       end
-
-      context 'when the request is invalid' do
-        before { post "/exercises/#{exercise_id}/batches" }
-
-        xit 'returns status code 422' do
-          expect(response).to have_http_status(422)
-        end
-
-        xit 'returns a validation failture message' do
-          expect(response.body).to match(/Validation failed: Name can't be blank/)
-        end
-      end
     end
   end
 
