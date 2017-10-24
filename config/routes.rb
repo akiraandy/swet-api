@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
-  post   '/login',   to: 'sessions#create'
-  delete '/logout',  to: 'sessions#destroy'
+  mount_devise_token_auth_for 'User', at: 'auth'
+
   resources :users, shallow: true do
     resources :workouts do
       resources :exercises do
