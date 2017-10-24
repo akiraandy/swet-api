@@ -1,97 +1,46 @@
-require 'rails_helper'
+require 'spec_helper'
 
 RSpec.describe "User API", type: :request do
 
-  describe 'GET /exercises' do
-    before { get "/workouts/#{workout_id}/exercises" }
+  describe "GET /users" do
+    let(:user) { FactoryGirl.create :user }
+    before { get "/users/#{user.id}" }
 
-    it 'returns exercises' do
-      expect(json).not_to be_empty
-      expect(json.size).to eq(6)
+    it 'returns the info about a reporter on a hash' do
+      user_response = JSON.parse(response.body, sybmolize_names: true)
+      expect(json['email']).to eql user.email
     end
 
     it 'returns status code 200' do
       expect(response).to have_http_status(200)
     end
+
   end
 
-  describe 'GET /exercises/:id' do
-    before { get "/exercises/#{exercise_id}"}
-
-    context 'when the record exists' do
-      it 'returns the exercise' do
-        expect(json).not_to be_empty
-        expect(json['name']).to eq(Exercise.first.name)
-      end
-
-      it 'returns status code 200' do
-        expect(response).to have_http_status(200)
+  describe 'POST /users' do
+    context 'when user is successfully created' do
+      let(:user) { FactoryGirl.attributes_for :user }
+      before { post "/users", params: { password: '12345678', password_confirmation: '12345678', email: "user@domain.com" } }
+      it "renders the json representation for the user record just created" do
+        expect(json['email']).to eql "user@domain.com"
       end
     end
-
-    context 'when the record does not exist' do
-      let(:exercise_id) { 200 }
-
-      it 'returns status code 404' do
-        expect(response).to have_http_status(404)
+    context 'when is not created' do
+      let(:invalid_user_attributes) { {password: '12345678',
+                                      password_confirmation: '12345678'} }
+      before { post "/users", params: { user: invalid_user_attributes } }
+      it "renders an errors json" do
+        expect(json).to have_key("errors")
       end
 
-      it 'returns a not found message' do
-        expect(response.body).to match(/Couldn't find Exercise/)
-      end
-    end
-  end
-
-  describe 'POST /exercises' do
-    let(:valid_attributes) { {name: "Push-ups" } }
-
-    context 'when the request is valid' do
-      before { post "/workouts/#{workout_id}/exercises", params: valid_attributes}
-
-      it 'creates a workout' do
-        expect(json['name']).to eq("Push-ups")
+      it "renders the json errors on why the user could not be created" do
+        user_response = JSON.parse(response.body, sybmolize_names: true)
+        expect(json['errors']['email']).to include "can't be blank"
       end
 
-      it 'returns status code 201' do
-        expect(response).to have_http_status(201)
+      it "should have http status code 422" do
+        expect(response).to have_http_status 422
       end
-
-      context 'when the request is invalid' do
-        before { post "/workouts/#{workout_id}/exercises", params: {name: nil} }
-
-        it 'returns status code 422' do
-          expect(response).to have_http_status(422)
-        end
-
-        it 'returns a validation failture message' do
-          expect(response.body).to match(/Validation failed: Name can't be blank/)
-        end
-      end
-    end
-  end
-
-  describe "PUT /exercise/:id" do
-    let(:valid_attributes) { { name: 'Edit name' } }
-
-    context 'when the record exists' do
-      before { put "/exercises/#{exercise_id}", params: valid_attributes }
-
-      it 'updates the record' do
-        expect(response.body).to be_empty
-        expect(exercise.name).to eq('Edit name')
-      end
-
-      it 'returns status code 204' do
-        expect(response).to have_http_status(204)
-      end
-    end
-  end
-
-  describe "DELETE /exercises/:id" do
-    before { delete "/exercises/#{exercise_id}" }
-
-    it 'returns status code 204' do
-      expect(response).to have_http_status(204)
     end
   end
 end

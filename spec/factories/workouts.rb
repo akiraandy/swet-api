@@ -49,9 +49,9 @@ FactoryGirl.define do
   end
 
   factory :user do
-    name { Faker::Internet.user_name }
-    password { Faker::Internet.password(8) }
     email { Faker::Internet.email }
+    password '12345678'
+    password_confirmation '12345678'
 
     factory :user_with_workouts do
       transient do

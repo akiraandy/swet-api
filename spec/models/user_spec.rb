@@ -1,19 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe User, type: :model do
-  it { should have_secure_password }
+RSpec.describe User do
+  before { @user = FactoryGirl.build(:user) }
 
-  it { should validate_presence_of(:name) }
-
-  it { should validate_presence_of(:password) }
+  subject { @user }
 
   it { should validate_presence_of(:email) }
+  it { should validate_uniqueness_of(:email).ignoring_case_sensitivity }
+  it { should validate_confirmation_of(:password) }
+  it { should allow_value('example@domain.com').for(:email) }
 
-  it { should have_many(:workouts).dependent(:destroy) }
-
-  it { should have_many(:exercises) }
-
-  it { should have_many(:sets) }
-
-
+  it { should be_valid }
 end
